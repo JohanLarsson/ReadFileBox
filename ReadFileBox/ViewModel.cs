@@ -9,9 +9,21 @@
     public class ViewModel : INotifyPropertyChanged
     {
         private string _content;
+        private bool _isEnabled = true;
         private static readonly string FileName = @"C:\Temp\SampleFile.txt";
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                if (value == _isEnabled) return;
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Content
         {
@@ -26,23 +38,39 @@
 
         public async Task Read()
         {
-            using (var stream = File.OpenRead(FileName))
+            IsEnabled = false;
+            try
             {
-                using (var reader = new StreamReader(stream))
+                using (var stream = File.OpenRead(FileName))
                 {
-                    Content = await reader.ReadToEndAsync().ConfigureAwait(false);
+                    using (var reader = new StreamReader(stream))
+                    {
+                        Content = await reader.ReadToEndAsync().ConfigureAwait(false);
+                    }
                 }
+            }
+            finally
+            {
+                IsEnabled = true;
             }
         }
 
         public async Task Save()
         {
-            using (var stream = File.OpenWrite(FileName))
+            IsEnabled = false;
+            try
             {
-                using (var writer = new StreamWriter(stream))
+                using (var stream = File.OpenWrite(FileName))
                 {
-                    await writer.WriteAsync(Content).ConfigureAwait(false);
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        await writer.WriteAsync(Content).ConfigureAwait(false);
+                    }
                 }
+            }
+            finally
+            {
+                IsEnabled = true;
             }
         }
 

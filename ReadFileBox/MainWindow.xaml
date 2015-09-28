@@ -15,8 +15,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Click="OnReadClick" Content="Read" />
-            <Button Click="OnSaveClick" Content="Save" />
+            <Button Click="OnReadClick" Content="Read" IsEnabled="{Binding IsEnabled}" />
+            <Button Click="OnSaveClick" Content="Save" IsEnabled="{Binding IsEnabled}" />
         </StackPanel>
         <TextBox Grid.Row="1" Text="{Binding Content}" />
     </Grid>
